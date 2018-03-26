@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Countdown Timer Example</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" href="css/normalize.css">
+        <style type="text/css">
+            html {
+                font-family: 'Roboto', sans-serif;
+                font-size: 100%;
+            }
+
+            body {
+                background-color: navy;
+                color: white;
+                margin-top: 15px;
+            }
+
+            button {
+                text-transform: uppercase;
+                padding: 5px;
+            }
+
+            button:disabled {
+                color: black;
+            }
+
+            #countdownMainDiv {
+                margin: 0 auto;
+                width: 300px;
+            }
+            #countdownControls {
+                margin: 0 auto;
+                width: 300px;
+                text-align: center;
+            }
+            #countdownCountDiv {
+                margin: 0 auto;
+                width: 100px;
+                font-size: 10em;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="countdownMainDiv">Countdown from: <input type="number" name="countdownNumber" id="countdownNumber"></div>
+        <div id="countdownCountDiv"><span id="countdownContainer"></span></div>
+        <div id="countdownControls">
+            <button id="start">Start</button>
+            <button id="stop">Stop</button>
+            <button id="reset">Reset</button>
+        </div>
+
+        <script type="text/javascript">
+        (function() {
+            var startButton = null,
+                stopButton = null,
+                resetButton = null,
+                countdownNumberInput = null,
+                countdownContainer = null,
+                countdownCountDiv = null,
+                countdownMainDiv = null,
+                timer = null,
+                count = 0;
+
+            function init() {
+                countdownMainDiv = document.getElementById('countdownMainDiv');
+                countdownCountDiv = document.getElementById('countdownCountDiv');
+                countdownNumberInput = document.getElementById('countdownNumber');
+                countdownContainer = document.getElementById('countdownContainer');
+
+                startButton = document.getElementById('start');
+                stopButton = document.getElementById('stop');
+                resetButton = document.getElementById('reset');
+
+                startButton.addEventListener('click', startupCount);
+                stopButton.addEventListener('click', stopCount);
+                resetButton.addEventListener('click', resetCount);
+
+                showInitialUI();
+            }
+
+            function showInitialUI() {
+                countdownMainDiv.style.display = 'block';
+                countdownCountDiv.style.display = 'none';
+                countdownNumberInput.value = '';
+
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                resetButton.disabled = true;
+            }
+
+            function showCountUI() {
+                countdownMainDiv.style.display = 'none';
+                countdownCountDiv.style.display = 'block';
+
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                resetButton.disabled = false;
+            }
+
+            function startCountUI() {
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                resetButton.disabled = false;
+            }
+
+            function stopUI() {
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                resetButton.disabled = false;
+            }
+
+            function resetUI() {
+                startButton.removeEventListener('click', startCount);
+                startButton.addEventListener('click', startupCount);
+
+                startButton.disabled = true;
+                stopButton.disabled = true;
+                resetButton.disabled = false;
+            }
+
+            function updateCountUI() {
+                countdownContainer.innerHTML = count;
+            }
+
+            function startupCount() {
+                count = parseInt(countdownNumberInput.value);
+                countdownContainer.innerHTML = count;
+
+                startButton.removeEventListener('click', startupCount);
+                startButton.addEventListener('click', startCount);
+                showCountUI();
+                startCount();
+            }
+
+            function startCount() {
+                timer = window.setInterval(innerCount, 1000);
+                startCountUI();
+            }
+
+            function stopCount() {
+                window.clearInterval(timer);
+                stopUI();
+            }
+
+            function resetCount() {
+                stopCount();
+                resetUI();
+                showInitialUI();
+            }
+
+            function innerCount() {
+                count--;
+                updateCountUI();
+
+                if (count === 0) {
+                    stopCount();
+                    resetUI();
+                }
+            }
+
+            init();
+        })();
+        </script>
+    </body>
+</html>
